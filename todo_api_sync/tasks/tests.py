@@ -1,11 +1,12 @@
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+
 class TaskAPITestCase(APITestCase):
     def setUp(self):
         # Изначальные данные для задач
         self.task_data = {
-            'title': 'Test Task', 
+            'title': 'Test Task',
             'priority': 'medium',
             'completed': False
         }
@@ -17,7 +18,8 @@ class TaskAPITestCase(APITestCase):
 
     def test_create_task(self):
         # Тест создания задачи (POST /tasks)
-        response = self.client.post('/api/tasks', self.task_data, format='json')
+        response = self.client.post(
+            '/api/tasks', self.task_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['title'], self.task_data['title'])
         self.assertEqual(response.data['priority'], self.task_data['priority'])
@@ -33,7 +35,8 @@ class TaskAPITestCase(APITestCase):
 
     def test_get_single_task(self):
         # Тест получения одной задачи по ID (GET /tasks/<id>/)
-        response = self.client.post('/api/tasks', self.task_data, format='json')
+        response = self.client.post(
+            '/api/tasks', self.task_data, format='json')
         task_id = response.data['id']
         response = self.client.get(f'/api/tasks/{task_id}/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -42,17 +45,22 @@ class TaskAPITestCase(APITestCase):
 
     def test_update_task(self):
         # Тест обновления задачи (PUT /tasks/<id>/)
-        response = self.client.post('/api/tasks', self.task_data, format='json')
+        response = self.client.post(
+            '/api/tasks', self.task_data, format='json')
         task_id = response.data['id']
-        response = self.client.put(f'/api/tasks/{task_id}/', self.updated_task_data, format='json')
+        response = self.client.put(
+            f'/api/tasks/{task_id}/', self.updated_task_data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['title'], self.updated_task_data['title'])
-        self.assertEqual(response.data['priority'], self.updated_task_data['priority'])
+        self.assertEqual(
+            response.data['title'], self.updated_task_data['title'])
+        self.assertEqual(
+            response.data['priority'], self.updated_task_data['priority'])
         self.assertTrue(response.data['completed'])
 
     def test_delete_task(self):
         # Тест удаления задачи (DELETE /tasks/<id>/)
-        response = self.client.post('/api/tasks', self.task_data, format='json')
+        response = self.client.post(
+            '/api/tasks', self.task_data, format='json')
         task_id = response.data['id']
         response = self.client.delete(f'/api/tasks/{task_id}/')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

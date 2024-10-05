@@ -7,3 +7,6 @@ exclude =
     #fastAPI
     ./alembic/versions
     *migration.py
+
+    #react
+    ./task-manager/node_modules/flatted/python
