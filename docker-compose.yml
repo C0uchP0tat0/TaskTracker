@@ -1,0 +1,34 @@
+version: '3.3'
+
+services:
+  
+  fast_api:
+    build: ./
+    volumes:
+       - ./tasks.db:/app/tasks.db  # Монтируем файл базы данных в контейнер
+      #  - ./:/app  # Монтируем файл базы данных в контейнер
+    environment:
+      DATABASE_URL: sqlite:////app/tasks.db
+    ports:
+      - "8000:8000"  # Порт для FastAPI
+    command: sh -c "pipenv run alembic -c ./alembic.ini upgrade head & pipenv run uvicorn todo_api_async.app.main:app --host 0.0.0.0 --port 8000"
+  
+  django:
+    build: ./
+    container_name: django
+    ports:
+      - "8001:8001"
+    environment:
+      - DEBUG=1
+    command: sh -c "pipenv run ./todo_api_sync/manage.py migrate && pipenv run ./todo_api_sync/manage.py runserver 0.0.0.0:8001"
+  
+  react:
+    build: ./task-manager
+    container_name: react
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npm install && npm start"
+    depends_on:
+      - fast_api

@@ -1,0 +1,9 @@
+[flake8]
+exclude =
+    migrations,
+    ./list
+    ./.venv
+
+    #fastAPI
+    ./alembic/versions
+    *migration.py
