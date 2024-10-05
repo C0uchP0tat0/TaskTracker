@@ -133,9 +133,9 @@ TaskTracker/
 
 После запуска:
 
-FastAPI backend будет доступен по адресу: http://localhost:8000/docs#.
-Django backend — http://localhost:8001.
-React frontend — http://localhost:3000.
+ - FastAPI backend будет доступен по адресу: http://localhost:8000/docs#.
+ - Django backend — http://localhost:8001.
+ - React frontend — http://localhost:3000.
 
 ## 3. Эндпоинты FastAPI (асинхронный backend)
 
