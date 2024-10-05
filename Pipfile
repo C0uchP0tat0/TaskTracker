@@ -12,6 +12,9 @@ flake8 = "*"
 uvicorn = "*"
 django = "*"
 djangorestframework = "*"
+pytest = "*"
+pytest-asyncio = "*"
+httpx = "*"
 
 [dev-packages]
 

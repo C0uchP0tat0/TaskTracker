@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 
-from todo_api_async.app.models import PriorityEnum
+from .models import PriorityEnum
 from .database import get_db
 from .schemas import TaskCreate, TaskUpdate, TaskResponse
 from .crud import (create_task, get_tasks,

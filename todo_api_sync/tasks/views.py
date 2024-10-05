@@ -30,45 +30,30 @@ def manage_tasks(request):
         return Response(serializer.data)
 
 
-# Получение одной задачи по ID
-@api_view(['GET'])
-def get_task(request, task_id):
-    task = next((task for task in tasks if task['id'] == task_id), None)
-
-    if task is None:
-        return Response(
-            {'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
-
-    serializer = TaskSerializer(task)  # Используем сериализатор для сериализации одной задачи# noqa: E501
-    return Response(serializer.data)
-
-
-# PUT /tasks/<task_id> - обновление задачи
-@api_view(['PUT'])
-def update_task(request, task_id):
+@api_view(['GET', 'PUT', 'DELETE'])
+def manage_task_by_id(request, task_id):
+    global tasks
     task = next((task for task in tasks if task['id'] == task_id), None)
 
     if not task:
         return Response(
             {'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
 
-    serializer = TaskSerializer(data=request.data, partial=True)  # Позволяем частичное обновление  # noqa: E501
-    if serializer.is_valid():
-        task.update(serializer.validated_data)  # Обновляем задачу с помощью валидированных данных  # noqa: E501
-        return Response(task)
-    return Response(
-        serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'GET':
+        # Получение одной задачи по ID
+        serializer = TaskSerializer(task)
+        return Response(serializer.data)
 
+    elif request.method == 'PUT':
+        # Обновление задачи по ID
+        serializer = TaskSerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            task.update(serializer.validated_data)
+            return Response(task)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# DELETE /tasks/<task_id> - удаление задачи
-@api_view(['DELETE'])
-def delete_task(request, task_id):
-    global tasks
-    task = next((task for task in tasks if task['id'] == task_id), None)
-
-    if task:
+    elif request.method == 'DELETE':
+        # Удаление задачи по ID
         tasks.remove(task)
         return Response(
             {'message': 'Task deleted'}, status=status.HTTP_204_NO_CONTENT)
-    return Response(
-        {'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)

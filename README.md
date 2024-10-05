@@ -118,7 +118,6 @@ TaskTracker/
 
     ```bash
     npm start
-
     ```
 Примечание: React-приложение будет доступно по адресу http://localhost:3000.
 
@@ -169,8 +168,8 @@ TaskTracker/
  - GET /tasks — Получение списка задач.
  - POST /tasks — Добавление новой задачи.
  - GET /tasks/{task_id}/ — Получение задачи по её ID.
- - PUT /tasks/{task_id}/update — Обновление задачи.
- - DELETE /tasks/{task_id}/delete — Удаление задачи.
+ - PUT /tasks/{task_id}/ — Обновление задачи.
+ - DELETE /tasks/{task_id}/ — Удаление задачи.
 
 ## 5. Основные зависимости
 
@@ -180,7 +179,11 @@ TaskTracker/
  - Alembic — инструмент для управления миграциями базы данных.
  - SQLAlchemy — ORM для взаимодействия с базой данных.
 
+## 6. Тестирование 
 
-## 6. Лицензия
+    pipenv run ./todo_api_sync/manage.py test tasks
+
+
+## 7. Лицензия
 
 Этот проект лицензирован под лицензией MIT.
