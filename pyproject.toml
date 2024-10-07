@@ -1,0 +1,5 @@
+[tool.pytest.ini_options]
+pythonpath = [
+  ".", "todo_api_async/app",
+]
+asyncio_mode="auto"

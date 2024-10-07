@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
@@ -24,7 +24,11 @@ app.add_middleware(
 
 
 # POST /tasks - добавление новой задачи
-@app.post("/tasks", response_model=TaskResponse)
+@app.post(
+    "/tasks",
+    response_model=TaskResponse,
+    status_code=status.HTTP_201_CREATED
+    )
 async def add_task(task: TaskCreate, db: AsyncSession = Depends(get_db)):
     return await create_task(db, task.title, task.priority)
 
@@ -33,7 +37,7 @@ async def add_task(task: TaskCreate, db: AsyncSession = Depends(get_db)):
 @app.get("/tasks", response_model=List[TaskResponse])
 async def list_tasks(
     completed: Optional[bool] = None,
-    priority: Optional[PriorityEnum] = None,  # Добавляем фильтр по приоритету
+    priority: Optional[PriorityEnum] = None,
     db: AsyncSession = Depends(get_db)
 ):
     return await get_tasks(db, completed, priority)
@@ -67,7 +71,11 @@ async def update_existing_task(
 
 
 # DELETE /tasks/<task_id> - удаление задачи
-@app.delete("/tasks/{task_id}", response_model=TaskResponse)
+@app.delete(
+    "/tasks/{task_id}",
+    response_model=None,
+    status_code=status.HTTP_204_NO_CONTENT
+    )
 async def delete_existing_task(
         task_id: int,
         db: AsyncSession = Depends(get_db)):
@@ -77,4 +85,4 @@ async def delete_existing_task(
     if not deleted_task:
         raise HTTPException(status_code=404, detail="Task not found")
 
-    return deleted_task
+    return None

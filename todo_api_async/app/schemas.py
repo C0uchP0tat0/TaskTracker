@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from enum import Enum
 from typing import Optional
 
@@ -42,7 +42,4 @@ class TaskResponse(BaseModel):
     priority: PriorityEnum
     completed: bool
 
-    # Настройки для работы с ORM
-    class Config:
-        orm_mode = True  # Позволяет работать с ORM моделями
-        from_attributes = True  # Для ORM атрибутов (если нужно)
+    model_config = ConfigDict(from_attributes=True)

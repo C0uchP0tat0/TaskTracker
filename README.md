@@ -179,7 +179,13 @@ TaskTracker/
  - Alembic — инструмент для управления миграциями базы данных.
  - SQLAlchemy — ORM для взаимодействия с базой данных.
 
-## 6. Тестирование 
+## 6. Тестирование
+
+### 1.1. Тестирование FastAPI-приложения
+
+    pipenv run pytest -v -s ./todo_api_async/tests
+
+### 1.2. Тестирование Django-приложения
 
     pipenv run ./todo_api_sync/manage.py test tasks
 
