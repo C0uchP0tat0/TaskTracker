@@ -1,23 +1,21 @@
 from fastapi import status
 
-from conftest import client
-
 
 # Тест получения всех задач
-def test_list_tasks():
+async def test_list_tasks_async(ac):
     # Создание нескольких задач
     task_1 = {"title": "Task 1", "priority": "low"}
     task_2 = {"title": "Task 2", "priority": "high"}
 
-    response_1 = client.post("/tasks", json=task_1)
-    response_2 = client.post("/tasks", json=task_2)
+    response_1 = await ac.post("/tasks", json=task_1)
+    response_2 = await ac.post("/tasks", json=task_2)
 
     # Проверим, что задачи созданы успешно
     assert response_1.status_code == status.HTTP_201_CREATED
     assert response_2.status_code == status.HTTP_201_CREATED
 
     # Получение всех задач
-    response = client.get("/tasks")
+    response = await ac.get("/tasks")
 
     assert response.status_code == status.HTTP_200_OK
     tasks = response.json()
@@ -29,12 +27,12 @@ def test_list_tasks():
 
 
 # Тест создания задачи
-def test_create_task():
+async def test_create_task_async(ac):
     task_data = {
         "title": "New Task",
         "priority": "medium"
     }
-    response = client.post(
+    response = await ac.post(
         "/tasks",
         json=task_data
     )
@@ -47,14 +45,14 @@ def test_create_task():
 
 
 # Тест получения задачи по ID
-def test_get_task_by_id():
+async def test_get_task_by_id_async(ac):
     task_data = {"title": "Task for ID", "priority": "medium"}
     # Создание задачи
-    post_response = client.post("/tasks", json=task_data)
+    post_response = await ac.post("/tasks", json=task_data)
     task_id = post_response.json()["id"]
 
     # Получение задачи по ID
-    get_response = client.get(f"/tasks/{task_id}")
+    get_response = await ac.get(f"/tasks/{task_id}")
 
     assert get_response.status_code == status.HTTP_200_OK
     task = get_response.json()
@@ -63,16 +61,16 @@ def test_get_task_by_id():
 
 
 # Тест обновления задачи
-def test_update_task():
+async def test_update_task_async(ac):
     task_data = {"title": "Original Task", "priority": "low"}
     # Создание задачи
-    post_response = client.post("/tasks", json=task_data)
+    post_response = await ac.post("/tasks", json=task_data)
     task_id = post_response.json()["id"]
 
     # Данные для обновления
     updated_data = {
         "title": "Updated Task", "priority": "high", "completed": True}
-    put_response = client.put(f"/tasks/{task_id}", json=updated_data)
+    put_response = await ac.put(f"/tasks/{task_id}", json=updated_data)
 
     assert put_response.status_code == status.HTTP_200_OK
     updated_task = put_response.json()
@@ -82,17 +80,17 @@ def test_update_task():
 
 
 # Тест удаления задачи
-def test_delete_task():
+async def test_delete_task_async(ac):
     task_data = {"title": "Task to delete", "priority": "low"}
     # Создание задачи
-    post_response = client.post("/tasks", json=task_data)
+    post_response = await ac.post("/tasks", json=task_data)
     task_id = post_response.json()["id"]
 
     # Удаление задачи
-    delete_response = client.delete(f"/tasks/{task_id}")
+    delete_response = await ac.delete(f"/tasks/{task_id}")
 
     assert delete_response.status_code == status.HTTP_204_NO_CONTENT
 
     # Проверка, что задача удалена
-    get_response = client.get(f"/tasks/{task_id}")
+    get_response = await ac.get(f"/tasks/{task_id}")
     assert get_response.status_code == status.HTTP_404_NOT_FOUND

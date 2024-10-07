@@ -1,10 +1,11 @@
 import os
 import asyncio
 from typing import AsyncGenerator
+import uvloop
 
 import pytest
 from fastapi.testclient import TestClient
-from httpx import AsyncClient
+from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
@@ -41,20 +42,13 @@ async def prepare_database():
     if os.path.exists("test.db"):
         os.remove("test.db")
 
-
-# SETUP
-@pytest.fixture(scope='session')
-def event_loop(request):
-    """Create an instance of the default event loop for each test case."""
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
+asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 client = TestClient(app)
 
 
 @pytest.fixture(scope="session")
 async def ac() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    async with AsyncClient(
+            transport=ASGITransport(app=app), base_url="http://test") as ac:
         yield ac
